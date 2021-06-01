@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cash Flow Minimization</title>
+    <script
+      src="https://kit.fontawesome.com/5548f5ed00.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="script.js" type="module"></script>
+    <link
+      rel="icon"
+      href="https://www.pinclipart.com/picdir/big/351-3514526_cash-settlement-icon-clipart.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="heap.js"></script>
+
+    <script>
+      var arrHead = new Array();
+      arrHead = ["", "Person 1", "Person 2", "Amount"];
+
+      function createTable() {
+        var cashTable = document.createElement("table");
+        cashTable.setAttribute("id", "cashTable");
+
+        var tr = cashTable.insertRow(0);
+        for (var h = 0; h < arrHead.length; h++) {
+          var th = document.createElement("th");
+          th.innerHTML = arrHead[h];
+          tr.appendChild(th);
+        }
+
+        var rowCnt = cashTable.rows.length;
+        var tr = cashTable.insertRow(rowCnt);
+
+        for (var c = 0; c < arrHead.length; c++) {
+          var td = document.createElement("td");
+          td = tr.insertCell(c);
+
+          if (c == 0) {
+            // the first column.
+            // add a button in every new row in the first column.
+            var button = document.createElement("button");
+
+            // set input attributes.
+            button.setAttribute("type", "button");
+            button.textContent = "Remove";
+            button.setAttribute("class", "btn btn-danger");
+            button.setAttribute("onclick", "removeRow(this)");
+
+            td.appendChild(button);
+          } else {
+            // 2nd, 3rd and 4th column, will have textbox.
+            var ele = document.createElement("input");
+            ele.setAttribute("type", "text");
+            ele.setAttribute("value", "");
+
+            td.appendChild(ele);
+          }
+        }
+
+        var div = document.getElementById("cont");
+        div.appendChild(cashTable);
+      }
+
+      // now, add a new to the TABLE.
+      function addRow() {
+        var cashTab = document.getElementById("cashTable");
+
+        var rowCnt = cashTab.rows.length;
+        var tr = cashTab.insertRow(rowCnt);
+
+        for (var c = 0; c < arrHead.length; c++) {
+          var td = document.createElement("td"); // table definition.
+          td = tr.insertCell(c);
+
+          if (c == 0) {
+            // the first column.
+            // add a button in every new row in the first column.
+            var button = document.createElement("button");
+
+            // set input attributes.
+            button.setAttribute("type", "button");
+
+            button.textContent = "Remove";
+            button.setAttribute("class", "btn btn-danger");
+
+            // add button's 'onclick' event.
+            button.setAttribute("onclick", "removeRow(this)");
+
+            td.appendChild(button);
+          } else {
+            // 2nd, 3rd and 4th column, will have textbox.
+            var ele = document.createElement("input");
+            ele.setAttribute("type", "text");
+            ele.setAttribute("value", "");
+
+            td.appendChild(ele);
+          }
+        }
+      }
+
+      function removeRow(oButton) {
+        var cashTab = document.getElementById("cashTable");
+        cashTab.deleteRow(oButton.parentNode.parentNode.rowIndex); // button -> td -> tr.
+      }
+    </script>
+  </head>
+
+  <body onload="createTable()">
+    <div
+      style="
+        font-size: 25px;
+        font-family: sans-serif;
+        font-weight: bold;
+        background-color: whitesmoke;
+        text-align: center;
+        line-height: 60px;
+        height: 60px;
+      "
+    >
+      Cash Flow Minimization
+    </div>
+    <div id="container">
+      <div id="container1">
+        <span
+          id="temptext1"
+          style="
+            width: 100%;
+            text-align: center;
+            font-size: x-large;
+            font-weight: bold;
+          "
+        >
+          Click on Get New Problem OR Generate Random to create problem
+        </span>
+        <div id="mynetwork1" style="display: none"></div>
+      </div>
+      <div id="container2">
+        <span
+          id="temptext2"
+          style="
+            width: 100%;
+            text-align: center;
+            font-size: x-large;
+            font-weight: bold;
+          "
+        >
+          Click on solve to get Solution !!
+        </span>
+        <div id="mynetwork2" style="display: none"></div>
+      </div>
+    </div>
+
+    <div>
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="generate-graph"
+        data-toggle="modal"
+        data-target="#exampleModalCenter"
+      >
+        Get New Problem
+      </button>
+      <button type="button" class="btn btn-danger" id="generate-random">
+        Generate Random
+      </button>
+      <br /><br />
+      <button type="button" class="btn btn-success" id="solve">Solve</button>
+    </div>
+
+    <div
+      class="modal fade bd-example-modal-lg"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle myLargeModalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-dialog modal-lg"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="content">
+              <p>
+                Enter the values in the form as : Person 1 needs to give some
+                amount to Person 2
+              </p>
+              <p>
+                <button
+                  class="btn btn-success"
+                  type="button"
+                  id="addRow"
+                  onclick="addRow()"
+                >
+                  Add New Row
+                </button>
+              </p>
+              <div id="cont"></div>
+              <!-- the container to add the TABLE -->
+              <br />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              id="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

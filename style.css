@@ -1,0 +1,72 @@
+html,
+body {
+  height: 100%;
+}
+#container1 {
+  width: 50%;
+  height: 100%;
+  border: 1px solid gray;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+#mynetwork1 {
+  width: 100%;
+  height: 100%;
+}
+
+#container2 {
+  width: 50%;
+  height: 100%;
+  border: 1px solid gray;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+#mynetwork2 {
+  width: 100%;
+  height: 100%;
+}
+
+#container {
+  width: 100%;
+  height: 70%;
+  background-color: white;
+  display: flex;
+  margin: 0 auto;
+}
+
+#generate-random {
+  margin-left: 5px;
+  margin-top: 15px;
+  display: inline-block;
+}
+
+#generate-graph {
+  margin-left: 40%;
+  margin-top: 15px;
+  display: inline-block;
+}
+
+#solve {
+  margin: auto;
+  display: block;
+}
+
+* {
+  font: 17px Calibri;
+}
+table {
+  width: 70%;
+}
+table,
+th,
+td {
+  border: 2px solid gray;
+  border-radius: 3px;
+  border-collapse: collapse;
+  padding: 2px 3px;
+  text-align: center;
+}
